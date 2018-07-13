@@ -1,0 +1,25 @@
+server:
+  port: 8084
+
+rocksdb:
+  data-dir: blockchain-db/node4
+
+# tio 网络框架配置
+tio:
+  heart-timeout: 5000
+  client-group-name: blockchain-client
+  server-group-context-name: blockchain-server
+  # 服务端监听的端口
+  server-port: 4567
+  # 服务端绑定的 IP
+  server-ip: 127.0.0.1
+  nodes:
+    -
+      ip: 127.0.0.1
+      port: 1234
+    -
+      ip: 127.0.0.1
+      port: 2345
+    -
+      ip: 127.0.0.1
+      port: 3456

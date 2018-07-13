@@ -1,7 +1,8 @@
 package com.phoenix.blockchain.core.model;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
+
+import com.phoenix.blockchain.common.util.WalletUtils;
 
 /**
  * Created by chengfeng on 2018/7/8.
@@ -35,6 +36,16 @@ public class Account extends BaseDomain {
      * 账户锁定状态
      */
     private boolean locked = false;
+
+    public Account() {
+
+    }
+
+    public Account(byte[] publicKey) {
+        this.publicKey = publicKey;
+        this.address = WalletUtils.generateAddress(publicKey);
+        this.balance = BigDecimal.ZERO;
+    }
 
     public String getPrivateKey() {
         return privateKey;
@@ -74,5 +85,16 @@ public class Account extends BaseDomain {
 
     public void setLocked(boolean locked) {
         this.locked = locked;
+    }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "privateKey='" + privateKey + '\'' +
+                ", publicKey=" + WalletUtils.publicKeyEncode(publicKey) +
+                ", address='" + address + '\'' +
+                ", balance=" + balance +
+                ", locked=" + locked +
+                '}';
     }
 }

@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active: node1
+
+# 关闭 tio 日志
+logging:
+  level:
+    org:
+      tio:
+        server: OFF
+        client: OFF
