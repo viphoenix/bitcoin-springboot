@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.google.common.base.Optional;
 import com.phoenix.blockchain.common.dal.RocksDbAccess;
 import com.phoenix.blockchain.common.util.SerializeUtils;
 import com.phoenix.blockchain.core.model.Account;
@@ -65,14 +66,21 @@ public class AccountManagerImpl implements AccountManager {
     }
 
     /**
-     * 根据db key获取指定账户
+     * 根据address获取指定账户
      *
-     * @param key
+     * @param address
      * @return
      */
     @Override
-    public Account getAccount(String key) {
-        return (Account) rocksDbAccess.get(key).get();
+    public Account getAccount(String address) {
+
+        Optional<Object> result = rocksDbAccess.get(ACCOUNT_PREFIX + address);
+
+        if (result.isPresent()) {
+            return (Account) result.get();
+        }
+
+        return null;
     }
 
     /**

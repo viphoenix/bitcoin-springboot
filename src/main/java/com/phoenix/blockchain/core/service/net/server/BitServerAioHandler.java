@@ -1,5 +1,7 @@
 package com.phoenix.blockchain.core.service.net.server;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,11 +50,14 @@ public class BitServerAioHandler extends BaseAioHandler implements ServerAioHand
 
         switch (messageType) {
 
-            case ACCOUNT_SYN_REQUEST: {
+            case ACCOUNT_SYN_REQUEST:
                 responsePacket = synAccount(messageBody);
                 break;
 
-            }
+            case ACCOUNT_LIST_SYN_REQUEST:
+
+                responsePacket = fetchAccountList();
+                break;
 
             default:
                 LogUtils.warn(LOGGER, "未识别的消息类型,暂时忽略. type: {0}.", messagePacket.getType());
@@ -100,5 +105,28 @@ public class BitServerAioHandler extends BaseAioHandler implements ServerAioHand
 
         return packet;
 
+    }
+
+    /**
+     * 获取当前节点账户列表
+     *
+     * @return
+     */
+    private MessagePacket fetchAccountList() {
+
+        LogUtils.info(LOGGER, "收到同步账户列表请求.");
+
+        MessagePacket responsePacket =  new MessagePacket();
+        ServerResponseVo responseVo = new ServerResponseVo();
+
+        List<Account> accounts = accountManager.listAccounts();
+
+        responseVo.setItem(accounts);
+        responseVo.setSuccess(true);
+
+        responsePacket.setType(MessageTypeEnum.ACCOUNT_LIST_SYN_RESPONSE.getCode());
+        responsePacket.setBody(SerializeUtils.serialize(responseVo));
+
+        return responsePacket;
     }
 }

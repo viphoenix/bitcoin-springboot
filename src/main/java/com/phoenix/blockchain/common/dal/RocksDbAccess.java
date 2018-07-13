@@ -110,7 +110,13 @@ public class RocksDbAccess implements DbAccess {
     @Override
     public Optional<Object> get(String key) {
         try {
-            return Optional.of(SerializeUtils.unSerialize(rocksDB.get(key.getBytes())));
+            // 避免同步时出现NPE
+            byte[] res = rocksDB.get(key.getBytes());
+
+            if (null != res) {
+                return Optional.of(SerializeUtils.unSerialize(res));
+
+            }
         } catch (RocksDBException e) {
             LogUtils.warn(LOGGER, e, "读取数据异常. key: {0}.", key);
         }

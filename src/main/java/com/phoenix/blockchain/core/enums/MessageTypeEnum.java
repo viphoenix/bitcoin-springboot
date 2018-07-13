@@ -7,8 +7,11 @@ package com.phoenix.blockchain.core.enums;
  */
 public enum MessageTypeEnum {
 
+    // 心跳信息
+    HEART_BEATS((byte)0, "HEART_BEATS", "心跳信息"),
+
     // 账户同步请求
-    ACCOUNT_SYN_REQUEST((byte)1, "ACCOUNT_SYN", "账户同步请求"),
+    ACCOUNT_SYN_REQUEST((byte)1, "ACCOUNT_SYN_REQUEST", "账户同步请求"),
 
     // 账户同步响应
     ACCOUNT_SYN_RESPONSE((byte)-1, "ACCOUNT_SYN_RESPONSE", "账户同步响应"),
@@ -25,6 +28,12 @@ public enum MessageTypeEnum {
     // 交易同步响应
     TRANSATOIN_SYN_RESPONSE((byte)-3, "TRANSATOIN_SYN_RESPONSE", "交易同步响应"),
 
+
+    // 账户列表同步请求
+    ACCOUNT_LIST_SYN_REQUEST((byte)4, "ACCOUNT_LIST_SYN_REQUEST", "账户列表同步请求"),
+
+    // 账户列表同步响应
+    ACCOUNT_LIST_SYN_RESPONSE((byte)-4, "ACCOUNT_LIST_SYN_RESPONSE", "账户列表同步响应"),
     ;
 
     private byte code;

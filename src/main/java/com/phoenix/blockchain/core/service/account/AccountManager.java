@@ -36,9 +36,11 @@ public interface AccountManager {
 
     /**
      * 获取账户信息
+     *
+     * @param address
      * @return
      */
-    Account getAccount(String key);
+    Account getAccount(String address);
     /**
      * 保存账户
      *

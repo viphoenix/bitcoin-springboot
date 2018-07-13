@@ -50,7 +50,7 @@ public class AccountController {
 		// 3.持久化账户信息
 		accountManager.saveAccount(account);
 
-		// 广播账户信息到对等节点
+		// 异步广播账户信息到对等节点
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -86,8 +86,8 @@ public class AccountController {
 
 
 	@GetMapping("/get")
-	public ResponseVO getAccount(String key) throws Exception {
-		Account account = accountManager.getAccount(key);
+	public ResponseVO getAccount(String address) throws Exception {
+		Account account = accountManager.getAccount(address);
 
 		ResponseVO responseVO = new ResponseVO();
 		responseVO.setReturnCode(ResponseVO.SUCCESS);

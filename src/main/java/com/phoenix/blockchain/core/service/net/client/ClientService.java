@@ -1,5 +1,7 @@
 package com.phoenix.blockchain.core.service.net.client;
 
+import static com.phoenix.blockchain.core.enums.MessageTypeEnum.*;
+
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -8,6 +10,8 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.tio.client.AioClient;
@@ -16,10 +20,12 @@ import org.tio.client.ClientGroupContext;
 import org.tio.core.Aio;
 
 import com.phoenix.blockchain.common.dal.DbAccess;
+import com.phoenix.blockchain.common.util.LogUtils;
 import com.phoenix.blockchain.common.util.SerializeUtils;
+import com.phoenix.blockchain.core.enums.MessageTypeEnum;
+import com.phoenix.blockchain.core.service.net.config.TioConfig;
 import com.phoenix.blockchain.core.service.net.model.MessagePacket;
 import com.phoenix.blockchain.core.service.net.model.Node;
-import com.phoenix.blockchain.core.service.net.config.TioConfig;
 
 /**
  * Created by chengfeng on 2018/7/11.
@@ -63,6 +69,19 @@ public class ClientService {
             Aio.bindGroup(channelContext, tioConfig.getClientGroupName());
         }
 
+    }
+
+    /**
+     * 应用启动时同步账户列表
+     */
+    @EventListener(ApplicationReadyEvent.class)
+    public void synAccounts() {
+        LogUtils.info(LOGGER, "请求报文类型: {0}", ACCOUNT_LIST_SYN_REQUEST);
+
+        MessagePacket packet = new MessagePacket();
+        packet.setType(MessageTypeEnum.ACCOUNT_LIST_SYN_REQUEST.getCode());
+        packet.setBody(SerializeUtils.serialize("fecth account list."));
+        sendGroup(packet);
     }
 
     /**
