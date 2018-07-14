@@ -27,17 +27,31 @@ public interface AccountManager {
     List<Account> listAccounts();
 
     /**
-     * 获取账户信息
+     * 获取普通账户信息
      *
      * @param address
      * @return
      */
-    Account getAccount(String address);
+    Account getBaseAccount(String address);
+
     /**
-     * 保存账户
+     * 获取挖矿账户信息
+     *
+     * @return
+     */
+    Account getMineAccount();
+
+    /**
+     * 保存普通账户
      *
      * @param account
      */
-    void saveAccount(Account account);
+    void saveBaseAccount(Account account);
+
+    /**
+     * 保存挖矿账户
+     * @param account
+     */
+    void saveMineAccount(Account account);
 
 }

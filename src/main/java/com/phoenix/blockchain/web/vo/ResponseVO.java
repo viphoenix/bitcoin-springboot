@@ -35,6 +35,37 @@ public class ResponseVO {
      */
     private String decription;
 
+    /**
+     * 构建成功返回结果
+     *
+     * @param object
+     * @return
+     */
+    public static ResponseVO success(Object object) {
+        ResponseVO responseVO = new ResponseVO();
+
+        responseVO.setObject(object);
+        responseVO.setReturnCode(SUCCESS);
+
+        return responseVO;
+    }
+
+    /**
+     * 构建失败返回结果
+     *
+     * @param object
+     * @return
+     */
+    public static ResponseVO fail(Object object, String failMsg) {
+        ResponseVO responseVO = new ResponseVO();
+
+        responseVO.setObject(object);
+        responseVO.setReturnCode(FAIL);
+        responseVO.setErrorMessage(failMsg);
+
+        return responseVO;
+    }
+
     public String getReturnCode() {
         return returnCode;
     }

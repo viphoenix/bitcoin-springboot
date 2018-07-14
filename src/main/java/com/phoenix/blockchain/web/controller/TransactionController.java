@@ -40,8 +40,6 @@ public class TransactionController {
 
         Transaction transaction = new Transaction();
 
-        ResponseVO responseVO = new ResponseVO();
-
         try {
 
             // 入参校验
@@ -67,14 +65,14 @@ public class TransactionController {
             // 同步交易
             transactionManager.sync(transaction);
 
-            responseVO.setReturnCode(ResponseVO.SUCCESS);
-            responseVO.setObject(transaction);
+
         } catch (Exception e) {
-            responseVO.setReturnCode(ResponseVO.FAIL);
-            responseVO.setObject(transaction);
+            return ResponseVO.fail(transaction, "创建交易异常");
+
         }
 
-        return responseVO;
+        return ResponseVO.success(transaction);
+
     }
 
     @GetMapping("/list")
@@ -83,11 +81,7 @@ public class TransactionController {
         ResponseVO responseVO = new ResponseVO();
 
         List<Transaction> transactions = transactionManager.listTransaction();
-        responseVO.setObject(transactions);
-        responseVO.setReturnCode(ResponseVO.SUCCESS);
-        responseVO.setDecription("交易列表信息.");
 
-        return responseVO;
-
+        return ResponseVO.success(transactions);
     }
 }

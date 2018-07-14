@@ -32,7 +32,6 @@ public class AccountController {
 	@Autowired
 	private AccountManager accountManager;
 
-
 	/**
 	 * 创建账户
 	 * @param request
@@ -48,7 +47,7 @@ public class AccountController {
 		Account account = accountManager.create(keyPair);
 
 		// 3.持久化账户信息
-		accountManager.saveAccount(account);
+		accountManager.saveBaseAccount(account);
 
 		// 异步广播账户信息到对等节点
 		new Thread(new Runnable() {
@@ -64,12 +63,13 @@ public class AccountController {
 		// 4.生成私钥
 		account.setPrivateKey(WalletUtils.privateKeyToString(keyPair.getPrivate()));
 
-		// 5.返回结果
-		ResponseVO responseVO = new ResponseVO();
-		responseVO.setReturnCode(ResponseVO.SUCCESS);
-		responseVO.setObject(account);
+		// 5.设置挖矿账户
+		if (null == accountManager.getMineAccount()) {
+			accountManager.saveMineAccount(account);
+		}
 
-		return responseVO;
+		// 6.返回结果
+		return ResponseVO.success(account);
 	}
 
 	@GetMapping("/list")
@@ -77,18 +77,13 @@ public class AccountController {
 
 		List<Account> accounts = accountManager.listAccounts();
 
-		ResponseVO responseVO = new ResponseVO();
-		responseVO.setReturnCode(ResponseVO.SUCCESS);
-		responseVO.setObject(accounts);
-		responseVO.setDecription("账户列表信息.");
-
-		return responseVO;
+		return ResponseVO.success(accounts);
 	}
 
 
-	@GetMapping("/get")
-	public ResponseVO getAccount(String address) throws Exception {
-		Account account = accountManager.getAccount(address);
+	@GetMapping("/getBaseAccount")
+	public ResponseVO getBaseAccount(String address) throws Exception {
+		Account account = accountManager.getBaseAccount(address);
 
 		ResponseVO responseVO = new ResponseVO();
 		responseVO.setReturnCode(ResponseVO.SUCCESS);
@@ -97,4 +92,10 @@ public class AccountController {
 		return responseVO;
 	}
 
+	@GetMapping("/getMineAccount")
+	public ResponseVO getMineAccount(String address) throws Exception {
+		Account account = accountManager.getMineAccount();
+
+		return ResponseVO.success(account);
+	}
 }

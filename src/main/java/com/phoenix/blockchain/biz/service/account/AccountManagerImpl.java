@@ -23,6 +23,8 @@ public class AccountManagerImpl implements AccountManager {
 
     private static final String ACCOUNT_PREFIX = "ACCOUNT_";
 
+    private static final String MINE_ACCOUNT_PREFIX = "MINE_ACCOUNT_";
+
     @Autowired
     private RocksDbAccess rocksDbAccess;
 
@@ -53,22 +55,34 @@ public class AccountManagerImpl implements AccountManager {
         return accounts;
     }
 
+    @Override
+    public Account getBaseAccount(String address) {
+        return getAccount(ACCOUNT_PREFIX + address);
+    }
+
+    @Override
+    public Account getMineAccount() {
+        return getAccount(MINE_ACCOUNT_PREFIX);
+    }
+
     /**
-     * 根据address获取指定账户
+     * 保存普通账户
      *
-     * @param address
-     * @return
+     * @param account
      */
     @Override
-    public Account getAccount(String address) {
+    public void saveBaseAccount(Account account) {
+        saveAccount(ACCOUNT_PREFIX + account.getAddress(), account);
+    }
 
-        Optional<Object> result = rocksDbAccess.get(ACCOUNT_PREFIX + address);
-
-        if (result.isPresent()) {
-            return (Account) result.get();
-        }
-
-        return null;
+    /**
+     * 保存挖矿账户
+     *
+     * @param account
+     */
+    @Override
+    public void saveMineAccount(Account account) {
+        saveAccount(MINE_ACCOUNT_PREFIX, account);
     }
 
     /**
@@ -76,8 +90,24 @@ public class AccountManagerImpl implements AccountManager {
      *
      * @param account
      */
-    @Override
-    public void saveAccount(Account account) {
-        rocksDbAccess.put(ACCOUNT_PREFIX + account.getAddress(), account);
+    private void saveAccount(String prefix, Account account) {
+        rocksDbAccess.put(prefix, account);
+    }
+
+    /**
+     * 根据key获取指定账户
+     *
+     * @param key
+     * @return
+     */
+    private Account getAccount(String key) {
+
+        Optional<Object> result = rocksDbAccess.get(key);
+
+        if (result.isPresent()) {
+            return (Account) result.get();
+        }
+
+        return null;
     }
 }
