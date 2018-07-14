@@ -13,13 +13,17 @@ import org.tio.server.intf.ServerAioHandler;
 
 import com.phoenix.blockchain.common.util.LogUtils;
 import com.phoenix.blockchain.common.util.SerializeUtils;
+import com.phoenix.blockchain.common.util.SignUtils;
 import com.phoenix.blockchain.common.util.WalletUtils;
 import com.phoenix.blockchain.core.enums.MessageTypeEnum;
 import com.phoenix.blockchain.core.model.Account;
+import com.phoenix.blockchain.core.model.Transaction;
+import com.phoenix.blockchain.core.service.transaction.TransactionPool;
 import com.phoenix.blockchain.core.service.account.AccountManager;
 import com.phoenix.blockchain.core.service.net.BaseAioHandler;
 import com.phoenix.blockchain.core.service.net.model.MessagePacket;
 import com.phoenix.blockchain.core.service.net.model.ServerResponseVo;
+import com.phoenix.blockchain.core.service.transaction.TransactionManager;
 
 /**
  * Created by chengfeng on 2018/7/11.
@@ -31,6 +35,12 @@ public class BitServerAioHandler extends BaseAioHandler implements ServerAioHand
 
     @Autowired
     private AccountManager accountManager;
+
+    @Autowired
+    private TransactionPool transactionPool;
+
+    @Autowired
+    private TransactionManager transactionManager;
 
     @Override
     public void handler(Packet packet, ChannelContext channelContext) throws Exception {
@@ -51,13 +61,18 @@ public class BitServerAioHandler extends BaseAioHandler implements ServerAioHand
         switch (messageType) {
 
             case ACCOUNT_SYN_REQUEST:
-                responsePacket = synAccount(messageBody);
+                Account account = (Account) SerializeUtils.unSerialize(messageBody);
+                responsePacket = synAccount(account);
                 break;
 
             case ACCOUNT_LIST_SYN_REQUEST:
 
                 responsePacket = fetchAccountList();
                 break;
+            case TRANSATOIN_SYN_REQUEST:
+                Transaction transaction = (Transaction) SerializeUtils.unSerialize(messageBody);
+
+
 
             default:
                 LogUtils.warn(LOGGER, "未识别的消息类型,暂时忽略. type: {0}.", messagePacket.getType());
@@ -70,19 +85,16 @@ public class BitServerAioHandler extends BaseAioHandler implements ServerAioHand
     /**
      * 同步账户并返回响应报文
      *
-     * @param data
+     * @param account
      * @return
      */
-    private MessagePacket synAccount(byte[] data) {
+    private MessagePacket synAccount(Account account) {
+        LogUtils.info(LOGGER, "开始同步账户信息. account.address: {0}", account.getAddress());
 
         MessagePacket packet = new MessagePacket();
         packet.setType(MessageTypeEnum.ACCOUNT_SYN_RESPONSE.getCode());
 
         ServerResponseVo responseVo = new ServerResponseVo();
-
-        Account account = accountManager.create(data);
-
-        LogUtils.info(LOGGER, "开始同步账户信息. account.address: {0}", account.getAddress());
 
         // 验证账户
         if (WalletUtils.verifyAddress(account.getAddress())) {
@@ -128,5 +140,43 @@ public class BitServerAioHandler extends BaseAioHandler implements ServerAioHand
         responsePacket.setBody(SerializeUtils.serialize(responseVo));
 
         return responsePacket;
+    }
+
+    /**
+     * 同步交易
+     *
+     * @param transaction
+     * @return
+     */
+    private MessagePacket synTransaction(Transaction transaction) {
+
+        LogUtils.info(LOGGER, "收到同步交易请求. txHash: {0}", transaction.getHash());
+
+        MessagePacket packet = new MessagePacket();
+        ServerResponseVo responseVo  = new ServerResponseVo();
+
+        try {
+            if (SignUtils.verify(transaction.getPublicKey(), transaction.getSignature(), transaction.toString())) {
+                transactionPool.addTransaction(transaction);
+                responseVo.setSuccess(true);
+                responseVo.setItem(transaction);
+            } else {
+                responseVo.setItem(transaction);
+                responseVo.setSuccess(false);
+                responseVo.setMessage("交易验证失败. sender: " + transaction.getSendAddress() + ", txHash: " + transaction
+                        .getHash());
+            }
+        } catch (Exception e) {
+            responseVo.setItem(transaction);
+            responseVo.setSuccess(false);
+            responseVo.setMessage("交易同步异常. sender: " + transaction.getSendAddress() + ", txHash: " + transaction
+                    .getHash());
+        }
+
+        packet.setType(MessageTypeEnum.TRANSATOIN_SYN_RESPONSE.getCode());
+        packet.setBody(SerializeUtils.serialize(responseVo));
+
+        return packet;
+
     }
 }

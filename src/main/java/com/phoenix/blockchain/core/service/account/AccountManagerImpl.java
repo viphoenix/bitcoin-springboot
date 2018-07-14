@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.base.Optional;
 import com.phoenix.blockchain.common.dal.RocksDbAccess;
-import com.phoenix.blockchain.common.util.SerializeUtils;
 import com.phoenix.blockchain.core.model.Account;
 
 /**
@@ -37,17 +36,6 @@ public class AccountManagerImpl implements AccountManager {
     public Account create(KeyPair keyPair) {
 
         return new Account(keyPair.getPublic().getEncoded());
-    }
-
-    /**
-     * 根据字节数据创建账户
-     *
-     * @param data
-     * @return
-     */
-    @Override
-    public Account create(byte[] data) {
-        return (Account) SerializeUtils.unSerialize(data);
     }
 
     /**

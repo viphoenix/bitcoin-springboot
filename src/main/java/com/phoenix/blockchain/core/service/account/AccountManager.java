@@ -20,14 +20,6 @@ public interface AccountManager {
     Account create(KeyPair keyPair);
 
     /**
-     * 根据字节数据创建账户
-     *
-     * @param data
-     * @return
-     */
-    Account create(byte[] data);
-
-    /**
      * 返回账户列表
      *
      * @return

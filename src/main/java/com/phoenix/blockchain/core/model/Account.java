@@ -44,7 +44,7 @@ public class Account extends BaseDomain {
     public Account(byte[] publicKey) {
         this.publicKey = publicKey;
         this.address = WalletUtils.generateAddress(publicKey);
-        this.balance = BigDecimal.ZERO;
+        this.balance = BigDecimal.TEN;
     }
 
     public String getPrivateKey() {

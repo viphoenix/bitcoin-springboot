@@ -18,6 +18,7 @@ import com.phoenix.blockchain.common.util.LogUtils;
 import com.phoenix.blockchain.common.util.SerializeUtils;
 import com.phoenix.blockchain.core.enums.MessageTypeEnum;
 import com.phoenix.blockchain.core.model.Account;
+import com.phoenix.blockchain.core.model.Transaction;
 import com.phoenix.blockchain.core.service.account.AccountManager;
 import com.phoenix.blockchain.core.service.net.BaseAioHandler;
 import com.phoenix.blockchain.core.service.net.model.MessagePacket;
@@ -94,6 +95,21 @@ public class BitClientAioHandler extends BaseAioHandler implements ClientAioHand
                         }
 
                     }
+                }
+
+                break;
+            }
+
+            case TRANSATOIN_SYN_RESPONSE: {
+                LogUtils.info(LOGGER, "响应报文类型: {0}", TRANSATOIN_SYN_RESPONSE);
+
+                Transaction transaction = (Transaction) responseVo.getItem();
+
+                if (responseVo.isSuccess()) {
+                    LogUtils.info(LOGGER, "交易同步成功. txHash: {0}", transaction.getHash());
+                } else {
+                    LogUtils.info(LOGGER, "交易同步失败. txHash: {0}, failMessage: {1}", transaction.getHash(),
+                            responseVo.getMessage());
                 }
 
                 break;

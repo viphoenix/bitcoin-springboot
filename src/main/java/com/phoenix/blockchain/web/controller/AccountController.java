@@ -80,6 +80,7 @@ public class AccountController {
 		ResponseVO responseVO = new ResponseVO();
 		responseVO.setReturnCode(ResponseVO.SUCCESS);
 		responseVO.setObject(accounts);
+		responseVO.setDecription("账户列表信息.");
 
 		return responseVO;
 	}

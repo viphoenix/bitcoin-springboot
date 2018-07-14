@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.phoenix.blockchain.common.util.WalletUtils;
 import com.phoenix.blockchain.core.enums.TxStatusEnum;
 
 /**
@@ -31,7 +32,7 @@ public class Transaction extends BaseDomain {
     private String receiptAddress;
 
     /**
-     * 收款人公钥
+     * 付款人公钥
      */
     private byte[] publicKey;
 
@@ -64,6 +65,10 @@ public class Transaction extends BaseDomain {
      * 扩展信息
      */
     private Map<String, Object> extendFiledMap = new HashMap<>();
+
+    public Transaction() {
+
+    }
 
     public Transaction(String sendAddress, String receiptAddress, BigDecimal amount, Long timestamp) {
         this.sendAddress = sendAddress;
@@ -150,5 +155,19 @@ public class Transaction extends BaseDomain {
 
     public void setExtendFiledMap(Map<String, Object> extendFiledMap) {
         this.extendFiledMap = extendFiledMap;
+    }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "sendAddress='" + sendAddress + '\'' +
+                ", receiptAddress='" + receiptAddress + '\'' +
+                ", publicKey='" + WalletUtils.publicKeyEncode(publicKey) + '\'' +
+                ", amount=" + amount +
+                ", timestamp=" + timestamp +
+                ", hash=" + hash +
+                ", status=" + status.getCode() +
+                ", extendFiledMap=" + extendFiledMap +
+                '}';
     }
 }
