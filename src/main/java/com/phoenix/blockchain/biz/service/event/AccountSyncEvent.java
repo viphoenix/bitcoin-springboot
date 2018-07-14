@@ -1,4 +1,4 @@
-package com.phoenix.blockchain.core.service.event;
+package com.phoenix.blockchain.biz.service.event;
 
 import org.springframework.context.ApplicationEvent;
 

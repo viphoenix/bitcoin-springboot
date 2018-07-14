@@ -1,4 +1,4 @@
-package com.phoenix.blockchain.core.enums;
+package com.phoenix.blockchain.common.enums;
 
 /**
  * Created by chengfeng on 2018/7/8.

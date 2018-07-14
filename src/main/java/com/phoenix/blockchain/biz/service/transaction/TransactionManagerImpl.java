@@ -1,4 +1,4 @@
-package com.phoenix.blockchain.core.service.transaction;
+package com.phoenix.blockchain.biz.service.transaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +16,8 @@ import com.phoenix.blockchain.common.util.SignUtils;
 import com.phoenix.blockchain.core.model.Account;
 import com.phoenix.blockchain.core.model.Transaction;
 import com.phoenix.blockchain.core.service.ApplicationContextProvider;
-import com.phoenix.blockchain.core.service.account.AccountManager;
-import com.phoenix.blockchain.core.service.event.TransactionSynEvent;
+import com.phoenix.blockchain.biz.service.account.AccountManager;
+import com.phoenix.blockchain.biz.service.event.TransactionSynEvent;
 
 /**
  * Created by chengfeng on 2018/7/14.
@@ -64,7 +64,7 @@ public class TransactionManagerImpl implements TransactionManager {
             String singature = SignUtils.sign(privateKey, transaction.toString());
             transaction.setSignature(singature);
 
-            // 交易验证是否本人,注意解密数据不能包含签名信息
+            // 交易验证是否本人,注意解密时,交易序列化数据不能包含签名信息
             if (!SignUtils.verify(sender.getPublicKey(), singature, transaction.toString())) {
                 throw new Exception("交易验证失败. sender: " + sender.getAddress());
             }

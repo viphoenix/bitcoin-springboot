@@ -1,6 +1,6 @@
 package com.phoenix.blockchain.core.service.net.client;
 
-import static com.phoenix.blockchain.core.enums.MessageTypeEnum.*;
+import static com.phoenix.blockchain.common.enums.MessageTypeEnum.*;
 
 import java.util.List;
 
@@ -16,10 +16,10 @@ import org.tio.core.intf.Packet;
 import com.phoenix.blockchain.common.dal.DbAccess;
 import com.phoenix.blockchain.common.util.LogUtils;
 import com.phoenix.blockchain.common.util.SerializeUtils;
-import com.phoenix.blockchain.core.enums.MessageTypeEnum;
+import com.phoenix.blockchain.common.enums.MessageTypeEnum;
 import com.phoenix.blockchain.core.model.Account;
 import com.phoenix.blockchain.core.model.Transaction;
-import com.phoenix.blockchain.core.service.account.AccountManager;
+import com.phoenix.blockchain.biz.service.account.AccountManager;
 import com.phoenix.blockchain.core.service.net.BaseAioHandler;
 import com.phoenix.blockchain.core.service.net.model.MessagePacket;
 import com.phoenix.blockchain.core.service.net.model.ServerResponseVo;

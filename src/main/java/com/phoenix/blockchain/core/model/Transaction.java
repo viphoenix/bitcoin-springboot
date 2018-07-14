@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.phoenix.blockchain.common.util.WalletUtils;
-import com.phoenix.blockchain.core.enums.TxStatusEnum;
+import com.phoenix.blockchain.common.enums.TxStatusEnum;
 
 /**
  * Created by chengfeng on 2018/7/8.

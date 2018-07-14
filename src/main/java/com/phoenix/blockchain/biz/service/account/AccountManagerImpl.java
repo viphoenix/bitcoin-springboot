@@ -1,4 +1,4 @@
-package com.phoenix.blockchain.core.service.account;
+package com.phoenix.blockchain.biz.service.account;
 
 import java.security.KeyPair;
 import java.util.ArrayList;

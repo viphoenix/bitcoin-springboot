@@ -33,8 +33,6 @@ public class RocksDbAccess implements DbAccess {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RocksDbAccess.class);
 
-    private static String NODE_LIST_KEY = "NODES";
-
     private RocksDB rocksDB;
 
     @Autowired
@@ -64,47 +62,6 @@ public class RocksDbAccess implements DbAccess {
             LogUtils.warn(LOGGER, e, "初始化db异常.");
 
         }
-    }
-
-    /**
-     * 添加节点
-     *
-     * @param nodes
-     * @return
-     */
-    @Override
-    public void addNodes(List<Node> nodes) {
-        try {
-            rocksDB.put(NODE_LIST_KEY.getBytes(), SerializeUtils.serialize(nodes));
-        } catch (Exception e) {
-
-            LogUtils.warn(LOGGER, e, "保存数据时,序列化异常.");
-        }
-    }
-
-    /**
-     * 获取所有节点
-     *
-     * @return
-     */
-    @Override
-    public List<Node> getNodes() {
-        try {
-            List<Node> nodes = (List<Node>) SerializeUtils.unSerialize(rocksDB.get(NODE_LIST_KEY.getBytes()));
-            if (!CollectionUtils.isEmpty(nodes)) {
-                return nodes;
-            }
-        } catch (Exception e) {
-            LogUtils.warn(LOGGER, e, "获取数据时,反序列化异常.");
-        }
-
-        return new ArrayList<Node>();
-
-    }
-
-    @Override
-    public void clearNodes(){
-        delete(NODE_LIST_KEY);
     }
 
     @Override
@@ -152,7 +109,8 @@ public class RocksDbAccess implements DbAccess {
         }
     }
 
-    private void delete(String key) {
+    @Override
+    public void delete(String key) {
         try {
             rocksDB.delete(key.getBytes());
         } catch (Exception e) {

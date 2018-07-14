@@ -1,6 +1,6 @@
 package com.phoenix.blockchain.core.service.net.client;
 
-import static com.phoenix.blockchain.core.enums.MessageTypeEnum.*;
+import static com.phoenix.blockchain.common.enums.MessageTypeEnum.ACCOUNT_LIST_SYN_REQUEST;
 
 import java.util.List;
 
@@ -19,10 +19,10 @@ import org.tio.client.ClientChannelContext;
 import org.tio.client.ClientGroupContext;
 import org.tio.core.Aio;
 
-import com.phoenix.blockchain.common.dal.DbAccess;
+import com.phoenix.blockchain.biz.service.node.NodeManager;
+import com.phoenix.blockchain.common.enums.MessageTypeEnum;
 import com.phoenix.blockchain.common.util.LogUtils;
 import com.phoenix.blockchain.common.util.SerializeUtils;
-import com.phoenix.blockchain.core.enums.MessageTypeEnum;
 import com.phoenix.blockchain.core.service.net.config.TioConfig;
 import com.phoenix.blockchain.core.service.net.model.MessagePacket;
 import com.phoenix.blockchain.core.service.net.model.Node;
@@ -45,7 +45,7 @@ public class ClientService {
     private AioClient aioClient;
 
     @Autowired
-    private DbAccess dbAccess;
+    private NodeManager nodeManager;
 
     @PostConstruct
     public void start() throws Exception {
@@ -53,13 +53,13 @@ public class ClientService {
         aioClient = new AioClient(clientGroupContext);
 
         // 客户端启动时清除所有历史数据
-        dbAccess.clearNodes();
+        nodeManager.clearNodes();
 
         List<Node> peerNodes = tioConfig.getNodes();
 
         // 持久化对等节点
         if (!CollectionUtils.isEmpty(peerNodes)) {
-            dbAccess.addNodes(peerNodes);
+            nodeManager.addNodes(peerNodes);
         }
 
         // 与对等节点建立连接
