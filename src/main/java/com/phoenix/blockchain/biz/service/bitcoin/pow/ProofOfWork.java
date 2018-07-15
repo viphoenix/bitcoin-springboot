@@ -1,4 +1,4 @@
-package com.phoenix.blockchain.biz.service.blockchain.pow;
+package com.phoenix.blockchain.biz.service.bitcoin.pow;
 
 import java.math.BigInteger;
 
@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.common.base.Optional;
-import com.phoenix.blockchain.biz.service.blockchain.blockchain.BlockChainManager;
-import com.phoenix.blockchain.biz.service.blockchain.transaction.TransactionManager;
+import com.phoenix.blockchain.biz.service.bitcoin.blockchain.BlockChainManager;
+import com.phoenix.blockchain.biz.service.bitcoin.transaction.TransactionManager;
 import com.phoenix.blockchain.common.constants.BitCoinConstants;
 import com.phoenix.blockchain.common.util.ByteUtils;
 import com.phoenix.blockchain.common.util.HashUtils;

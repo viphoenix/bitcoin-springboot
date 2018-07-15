@@ -6,12 +6,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.Optional;
-import com.phoenix.blockchain.biz.service.blockchain.account.AccountManager;
-import com.phoenix.blockchain.biz.service.blockchain.blockchain.BlockChainManager;
-import com.phoenix.blockchain.biz.service.blockchain.pow.PowResult;
-import com.phoenix.blockchain.biz.service.blockchain.pow.ProofOfWork;
-import com.phoenix.blockchain.biz.service.blockchain.transaction.TransactionManager;
-import com.phoenix.blockchain.biz.service.event.MineBlockEvent;
+import com.phoenix.blockchain.biz.service.bitcoin.account.AccountManager;
+import com.phoenix.blockchain.biz.service.bitcoin.blockchain.BlockChainManager;
+import com.phoenix.blockchain.biz.service.bitcoin.pow.PowResult;
+import com.phoenix.blockchain.biz.service.bitcoin.pow.ProofOfWork;
+import com.phoenix.blockchain.biz.service.bitcoin.transaction.TransactionManager;
+import com.phoenix.blockchain.biz.shared.event.MineBlockEvent;
 import com.phoenix.blockchain.core.model.Account;
 import com.phoenix.blockchain.core.model.Block;
 import com.phoenix.blockchain.core.service.ApplicationContextProvider;

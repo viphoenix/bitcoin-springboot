@@ -1,4 +1,4 @@
-package com.phoenix.blockchain.biz.service.blockchain.pow;
+package com.phoenix.blockchain.biz.service.bitcoin.pow;
 
 /**
  * Created by chengfeng on 2018/7/15.

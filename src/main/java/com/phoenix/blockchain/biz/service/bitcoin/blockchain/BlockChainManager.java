@@ -1,4 +1,4 @@
-package com.phoenix.blockchain.biz.service.blockchain.blockchain;
+package com.phoenix.blockchain.biz.service.bitcoin.blockchain;
 
 import com.phoenix.blockchain.core.model.Account;
 import com.phoenix.blockchain.core.model.Block;

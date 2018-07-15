@@ -15,8 +15,8 @@ import com.phoenix.blockchain.common.dal.DbAccess;
 import com.phoenix.blockchain.common.util.WalletUtils;
 import com.phoenix.blockchain.core.model.Account;
 import com.phoenix.blockchain.core.service.ApplicationContextProvider;
-import com.phoenix.blockchain.biz.service.blockchain.account.AccountManager;
-import com.phoenix.blockchain.biz.service.event.AccountSyncEvent;
+import com.phoenix.blockchain.biz.service.bitcoin.account.AccountManager;
+import com.phoenix.blockchain.biz.shared.event.AccountSyncEvent;
 import com.phoenix.blockchain.web.vo.ResponseVO;
 
 /**

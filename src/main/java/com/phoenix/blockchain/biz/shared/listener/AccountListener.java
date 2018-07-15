@@ -1,4 +1,4 @@
-package com.phoenix.blockchain.biz.service.listener;
+package com.phoenix.blockchain.biz.shared.listener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import com.phoenix.blockchain.common.util.SerializeUtils;
 import com.phoenix.blockchain.common.enums.MessageTypeEnum;
 import com.phoenix.blockchain.core.model.Account;
-import com.phoenix.blockchain.biz.service.event.AccountSyncEvent;
+import com.phoenix.blockchain.biz.shared.event.AccountSyncEvent;
 import com.phoenix.blockchain.core.service.net.model.MessagePacket;
 import com.phoenix.blockchain.core.service.net.client.ClientService;
 

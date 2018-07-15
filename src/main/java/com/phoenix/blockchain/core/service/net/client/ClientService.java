@@ -19,7 +19,7 @@ import org.tio.client.ClientChannelContext;
 import org.tio.client.ClientGroupContext;
 import org.tio.core.Aio;
 
-import com.phoenix.blockchain.biz.service.blockchain.node.NodeManager;
+import com.phoenix.blockchain.biz.service.bitcoin.node.NodeManager;
 import com.phoenix.blockchain.common.enums.MessageTypeEnum;
 import com.phoenix.blockchain.common.util.LogUtils;
 import com.phoenix.blockchain.common.util.SerializeUtils;

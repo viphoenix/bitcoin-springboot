@@ -1,4 +1,4 @@
-package com.phoenix.blockchain.biz.service.blockchain.blockchain;
+package com.phoenix.blockchain.biz.service.bitcoin.blockchain;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.common.base.Optional;
-import com.phoenix.blockchain.biz.service.blockchain.pow.ProofOfWork;
-import com.phoenix.blockchain.biz.service.blockchain.transaction.TransactionManager;
-import com.phoenix.blockchain.biz.service.blockchain.transaction.TransactionPool;
+import com.phoenix.blockchain.biz.service.bitcoin.pow.ProofOfWork;
+import com.phoenix.blockchain.biz.service.bitcoin.transaction.TransactionManager;
+import com.phoenix.blockchain.biz.service.bitcoin.transaction.TransactionPool;
 import com.phoenix.blockchain.common.constants.BitCoinConstants;
 import com.phoenix.blockchain.common.dal.RocksDbAccess;
 import com.phoenix.blockchain.common.enums.TxStatusEnum;

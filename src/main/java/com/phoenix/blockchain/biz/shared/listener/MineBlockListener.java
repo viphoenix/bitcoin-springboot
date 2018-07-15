@@ -1,10 +1,10 @@
-package com.phoenix.blockchain.biz.service.listener;
+package com.phoenix.blockchain.biz.shared.listener;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import com.phoenix.blockchain.biz.service.event.MineBlockEvent;
+import com.phoenix.blockchain.biz.shared.event.MineBlockEvent;
 import com.phoenix.blockchain.common.enums.MessageTypeEnum;
 import com.phoenix.blockchain.common.util.SerializeUtils;
 import com.phoenix.blockchain.core.model.Block;

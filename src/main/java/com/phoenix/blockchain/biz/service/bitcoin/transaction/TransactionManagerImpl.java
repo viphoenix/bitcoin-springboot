@@ -1,4 +1,4 @@
-package com.phoenix.blockchain.biz.service.blockchain.transaction;
+package com.phoenix.blockchain.biz.service.bitcoin.transaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.common.base.Preconditions;
-import com.phoenix.blockchain.biz.service.blockchain.account.AccountManager;
-import com.phoenix.blockchain.biz.service.event.TransactionSynEvent;
+import com.phoenix.blockchain.biz.service.bitcoin.account.AccountManager;
+import com.phoenix.blockchain.biz.shared.event.TransactionSynEvent;
 import com.phoenix.blockchain.common.constants.BitCoinConstants;
 import com.phoenix.blockchain.common.enums.TxStatusEnum;
 import com.phoenix.blockchain.common.util.HashUtils;
