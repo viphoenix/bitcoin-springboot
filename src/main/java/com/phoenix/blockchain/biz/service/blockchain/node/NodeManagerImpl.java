@@ -1,4 +1,4 @@
-package com.phoenix.blockchain.biz.service.node;
+package com.phoenix.blockchain.biz.service.blockchain.node;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.common.base.Optional;
-import com.phoenix.blockchain.biz.service.account.AccountManagerImpl;
+import com.phoenix.blockchain.biz.service.blockchain.account.AccountManagerImpl;
 import com.phoenix.blockchain.common.dal.RocksDbAccess;
 import com.phoenix.blockchain.common.util.LogUtils;
 import com.phoenix.blockchain.core.service.net.model.Node;

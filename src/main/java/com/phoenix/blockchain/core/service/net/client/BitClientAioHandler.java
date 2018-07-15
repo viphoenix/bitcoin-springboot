@@ -1,6 +1,9 @@
 package com.phoenix.blockchain.core.service.net.client;
 
-import static com.phoenix.blockchain.common.enums.MessageTypeEnum.*;
+import static com.phoenix.blockchain.common.enums.MessageTypeEnum.ACCOUNT_LIST_SYN_RESPONSE;
+import static com.phoenix.blockchain.common.enums.MessageTypeEnum.ACCOUNT_SYN_RESPONSE;
+import static com.phoenix.blockchain.common.enums.MessageTypeEnum.BLOCK_SYN_RESPONSE;
+import static com.phoenix.blockchain.common.enums.MessageTypeEnum.TRANSATOIN_SYN_RESPONSE;
 
 import java.util.List;
 
@@ -13,13 +16,14 @@ import org.tio.client.intf.ClientAioHandler;
 import org.tio.core.ChannelContext;
 import org.tio.core.intf.Packet;
 
+import com.phoenix.blockchain.biz.service.blockchain.account.AccountManager;
 import com.phoenix.blockchain.common.dal.DbAccess;
+import com.phoenix.blockchain.common.enums.MessageTypeEnum;
 import com.phoenix.blockchain.common.util.LogUtils;
 import com.phoenix.blockchain.common.util.SerializeUtils;
-import com.phoenix.blockchain.common.enums.MessageTypeEnum;
 import com.phoenix.blockchain.core.model.Account;
+import com.phoenix.blockchain.core.model.Block;
 import com.phoenix.blockchain.core.model.Transaction;
-import com.phoenix.blockchain.biz.service.account.AccountManager;
 import com.phoenix.blockchain.core.service.net.BaseAioHandler;
 import com.phoenix.blockchain.core.service.net.model.MessagePacket;
 import com.phoenix.blockchain.core.service.net.model.ServerResponseVo;
@@ -89,8 +93,8 @@ public class BitClientAioHandler extends BaseAioHandler implements ClientAioHand
 
                     for (Account account : accountList) {
 
-                        if (null == accountManager.getAccount(account.getAddress())) {
-                            accountManager.saveAccount(account);
+                        if (null == accountManager.getBaseAccount(account.getAddress())) {
+                            accountManager.saveBaseAccount(account);
                             LogUtils.info(LOGGER, "账户列表同步成功. account.address: {0}", account.getAddress());
                         }
 
@@ -113,6 +117,22 @@ public class BitClientAioHandler extends BaseAioHandler implements ClientAioHand
                 }
 
                 break;
+            }
+
+            case BLOCK_SYN_RESPONSE: {
+                LogUtils.info(LOGGER, "响应报文类型: {0}", BLOCK_SYN_RESPONSE);
+
+                Block block = (Block) responseVo.getItem();
+
+                if (responseVo.isSuccess()) {
+                    LogUtils.info(LOGGER, "区块同步成功. block: {0}", block);
+                } else {
+                    LogUtils.info(LOGGER, "区块同步失败. block: {0}, failMessage: {1}", block,
+                            responseVo.getMessage());
+                }
+
+                break;
+
             }
         }
 

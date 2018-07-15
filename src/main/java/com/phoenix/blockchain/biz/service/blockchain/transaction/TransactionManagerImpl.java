@@ -1,4 +1,4 @@
-package com.phoenix.blockchain.biz.service.transaction;
+package com.phoenix.blockchain.biz.service.blockchain.transaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,14 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.common.base.Preconditions;
+import com.phoenix.blockchain.biz.service.blockchain.account.AccountManager;
+import com.phoenix.blockchain.biz.service.event.TransactionSynEvent;
+import com.phoenix.blockchain.common.constants.BitCoinConstants;
+import com.phoenix.blockchain.common.enums.TxStatusEnum;
 import com.phoenix.blockchain.common.util.HashUtils;
 import com.phoenix.blockchain.common.util.LogUtils;
 import com.phoenix.blockchain.common.util.SignUtils;
 import com.phoenix.blockchain.core.model.Account;
 import com.phoenix.blockchain.core.model.Transaction;
 import com.phoenix.blockchain.core.service.ApplicationContextProvider;
-import com.phoenix.blockchain.biz.service.account.AccountManager;
-import com.phoenix.blockchain.biz.service.event.TransactionSynEvent;
 
 /**
  * Created by chengfeng on 2018/7/14.
@@ -44,9 +46,9 @@ public class TransactionManagerImpl implements TransactionManager {
 
         try {
             // 查询账户信息
-            Account sender = accountManager.getAccount(transaction.getSendAddress());
+            Account sender = accountManager.getBaseAccount(transaction.getSendAddress());
             Preconditions.checkNotNull(sender, "付款人账户不存在." + sender.getAddress());
-            Account recipient = accountManager.getAccount(transaction.getReceiptAddress());
+            Account recipient = accountManager.getBaseAccount(transaction.getReceiptAddress());
             Preconditions.checkNotNull(recipient, "付款人账户不存在." + recipient.getAddress());
 
             //验证账户余额
@@ -116,6 +118,77 @@ public class TransactionManagerImpl implements TransactionManager {
             transactions.add(transaction);
         }
         return transactions;
+    }
+
+    /**
+     * 创建矿工奖励交易
+     *
+     * @param mineAccount
+     * @return
+     */
+    @Override
+    public Transaction createRewardTx(Account mineAccount) {
+
+        Transaction transaction = new Transaction();
+
+        transaction.setReceiptAddress(mineAccount.getAddress());
+        transaction.setAmount(BitCoinConstants.REWARD_FEE);
+        transaction.setHash(HashUtils.sha256Hex(transaction.toString()));
+
+        return transaction;
+    }
+
+    /**
+     * 执行区块中的交易
+     *
+     * @param transactions
+     * @throws Exception
+     */
+    @Override
+    public void execute(List<Transaction> transactions) throws Exception{
+
+        for (int i = 0; i < transactions.size(); ++i) {
+
+            // 矿工奖励交易记录
+            if (i == 0) {
+                Account recipient = accountManager.getMineAccount();
+
+                recipient.setBalance(recipient.getBalance().add(transactions.get(i).getAmount()));
+                accountManager.saveMineAccount(recipient);
+
+                continue;
+            }
+
+            // 普通转账交易
+            Transaction transaction = transactions.get(i);
+            Account sender = accountManager.getBaseAccount(transaction.getSendAddress());
+            Account recipient = accountManager.getBaseAccount(transaction.getReceiptAddress());
+
+            // 验证签名
+            boolean verify = SignUtils.verify(sender.getPublicKey(), transaction.getSignature(), transaction.toString());
+            if (!verify) {
+                transaction.setStatus(TxStatusEnum.FAIL);
+                transaction.setErrorMsg("交易签名错误");
+
+                continue;
+            }
+
+            // 验证是否足额
+            if (transaction.getAmount().compareTo(sender.getBalance()) == 1) {
+                transaction.setStatus(TxStatusEnum.FAIL);
+                transaction.setErrorMsg("账户余额不足");
+                continue;
+            }
+
+            sender.setBalance(sender.getBalance().subtract(transaction.getAmount()));
+            recipient.setBalance(recipient.getBalance().add(transaction.getAmount()));
+
+            accountManager.saveBaseAccount(sender);
+            accountManager.saveBaseAccount(recipient);
+
+            // 从交易池移除交易
+            transactionPool.delete(transaction);
+        }
     }
 
     @Override

@@ -1,8 +1,6 @@
 package com.phoenix.blockchain.core.model;
 
-import java.io.Serializable;
-
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import com.phoenix.blockchain.common.constants.BitCoinConstants;
 
 /**
  * Created by chengfeng on 2018/7/8.
@@ -13,13 +11,15 @@ public class BlockHeader extends BaseDomain {
 
     private static final long serialVersionUID = 7702113613467813322L;
 
+    private String version = BitCoinConstants.SYS_VERSION;
+
     /**
-     * 上一区块hash
+     * 上一区块Header hash
      */
     private String preHash;
 
     /**
-     * 当前区块Hash
+     * 当前区块Header Hash, 比特币系统未使用
      */
     private String curHash;
 
@@ -36,12 +36,20 @@ public class BlockHeader extends BaseDomain {
     /**
      * 挖矿难度
      */
-    private Long difficulty;
+    private long difficulty;
 
     /**
      * 区块生成时间
      */
     private Long timestamp;
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
     public String getPreHash() {
         return preHash;
@@ -75,11 +83,11 @@ public class BlockHeader extends BaseDomain {
         this.height = height;
     }
 
-    public Long getDifficulty() {
+    public long getDifficulty() {
         return difficulty;
     }
 
-    public void setDifficulty(Long difficulty) {
+    public void setDifficulty(long difficulty) {
         this.difficulty = difficulty;
     }
 

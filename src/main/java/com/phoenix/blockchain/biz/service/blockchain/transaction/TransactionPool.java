@@ -1,4 +1,4 @@
-package com.phoenix.blockchain.biz.service.transaction;
+package com.phoenix.blockchain.biz.service.blockchain.transaction;
 
 import java.util.Map;
 
@@ -22,17 +22,21 @@ public class TransactionPool {
      *
      * @param transaction
      */
-    public void addTransaction(Transaction transaction) {
+    public synchronized void addTransaction(Transaction transaction) {
 
         if (!transactionMap.containsKey(transaction.getHash())) {
             transactionMap.put(transaction.getHash(), transaction);
         }
     }
 
+    public synchronized void delete(Transaction transaction) {
+        transactionMap.remove(transaction.getHash());
+    }
+
     /**
      * 清空交易
      */
-    public void clear() {
+    public synchronized void clear() {
         transactionMap.clear();
     }
 

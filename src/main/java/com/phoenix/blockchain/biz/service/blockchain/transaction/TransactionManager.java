@@ -1,7 +1,8 @@
-package com.phoenix.blockchain.biz.service.transaction;
+package com.phoenix.blockchain.biz.service.blockchain.transaction;
 
 import java.util.List;
 
+import com.phoenix.blockchain.core.model.Account;
 import com.phoenix.blockchain.core.model.Transaction;
 
 /**
@@ -37,6 +38,18 @@ public interface TransactionManager {
      * @return
      */
     List<Transaction> listTransaction();
+
+    /**
+     * 创建矿工奖励交易记录
+     *
+     * @return
+     */
+    Transaction createRewardTx(Account mineAccount);
+
+    /**
+     * 执行交易
+     */
+    void execute(List<Transaction> transactions) throws Exception;
 
     /**
      * 清空交易列表

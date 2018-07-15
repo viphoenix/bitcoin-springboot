@@ -1,4 +1,4 @@
-package com.phoenix.blockchain.biz.service.node;
+package com.phoenix.blockchain.biz.service.blockchain.node;
 
 import java.util.List;
 
