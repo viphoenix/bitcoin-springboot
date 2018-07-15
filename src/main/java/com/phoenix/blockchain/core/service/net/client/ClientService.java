@@ -85,6 +85,14 @@ public class ClientService {
     }
 
     /**
+     * TODO: 应用启动时同步区块
+     */
+    @EventListener(ApplicationReadyEvent.class)
+    public void synBlock() {
+
+    }
+
+    /**
      * 发送消息到一个group
      * @param messagePacket
      */

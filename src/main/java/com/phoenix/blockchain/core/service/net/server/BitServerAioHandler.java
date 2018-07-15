@@ -189,7 +189,7 @@ public class BitServerAioHandler extends BaseAioHandler implements ServerAioHand
     }
 
     /**
-     * 区块确认
+     * 区块确认, TODO 增加中断功能
      *
      * @param block
      * @return
@@ -203,14 +203,17 @@ public class BitServerAioHandler extends BaseAioHandler implements ServerAioHand
 
         if (blockChainManager.validateBlock(block)) {
 
+            // 新区快到来
+            ProofOfWork.newSynBlock = true;
+
+            // 更新最新区块索引
+            blockChainManager.updateLastBlock(block);
+
             // 执行交易并移除完成的交易记录
             transactionManager.execute(block.getBody().getTransactions());
 
             // 保存区块
             blockChainManager.saveBlock(block);
-
-            // 更新最新区块索引
-            blockChainManager.updateLastBlock(block);
 
             responseVo = ServerResponseVo.success(block);
 

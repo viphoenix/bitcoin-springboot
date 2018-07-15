@@ -2,8 +2,11 @@ package com.phoenix.blockchain.biz.service.blockchain.pow;
 
 import java.math.BigInteger;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.google.common.base.Optional;
+import com.phoenix.blockchain.biz.service.blockchain.blockchain.BlockChainManager;
 import com.phoenix.blockchain.common.constants.BitCoinConstants;
 import com.phoenix.blockchain.common.util.ByteUtils;
 import com.phoenix.blockchain.common.util.HashUtils;
@@ -18,34 +21,55 @@ import com.phoenix.blockchain.core.model.Block;
 public class ProofOfWork {
 
     /**
+     * 是否收到新区快同步事件 TODO:后期考虑优化
+     */
+    public static volatile boolean newSynBlock = false;
+
+    @Autowired
+    private BlockChainManager blockChainManager;
+
+    /**
      * 挖矿
      *
      * @param block
      * @return
      */
-    public PowResult mine(Block block) {
+    public Optional<PowResult> mine(Block block) {
 
         PowResult result = new PowResult();
 
+        boolean hasResult = false;
+
         long nonce = 0L;
         String headerHash = "";
-        while (true) {
+        while (!newSynBlock) {
 
             headerHash = HashUtils.sha256Hex(generateHeaderByte(block, nonce));
 
             // TODO 计算hash值前缀0的个数,待验证
             if (new BigInteger(headerHash, 16).shiftRight(256 - BitCoinConstants.DIFFICULTY) == BigInteger.ZERO) {
 
+                hasResult = true;
                 break;
             }
 
             ++nonce;
         }
 
+        // 如果新区块到来,还未发现区块,立即终止挖矿,与新区块比较区块高度
+        if (newSynBlock && !hasResult) {
+            Block lastBlock = blockChainManager.getLastBlock();
+
+            // 如果新区块高度大,则终止本轮挖矿;如果新区块高度小,忽略
+            if (lastBlock.getHeader().getHeight() > block.getHeader().getHeight()) {
+                return Optional.absent();
+            }
+        }
+
         result.setHash(headerHash);
         result.setNonce(nonce);
 
-        return result;
+        return Optional.of(result);
 
     }
 

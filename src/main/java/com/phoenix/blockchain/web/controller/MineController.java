@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.common.base.Optional;
 import com.phoenix.blockchain.biz.service.blockchain.account.AccountManager;
 import com.phoenix.blockchain.biz.service.blockchain.blockchain.BlockChainManager;
 import com.phoenix.blockchain.biz.service.blockchain.pow.PowResult;
@@ -48,31 +49,39 @@ public class MineController {
             return ResponseVO.fail(null, "挖矿账号不存在");
         }
 
-        // 2.创建区块
-        Block block = blockChainManager.createNewBlock(account);
+        // 循环打包挖矿
+        while (true) {
+            // 2.创建区块
+            Block block = blockChainManager.createNewBlock(account);
 
-        // 3.pow工作量证明
-        PowResult powResult = proofOfWork.mine(block);
-        block.getHeader().setNonce(powResult.getNonce());
-        block.getHeader().setCurHash(powResult.getHash());
+            // 3.pow工作量证明
+            Optional<PowResult> powResult = proofOfWork.mine(block);
 
-        // 4.执行交易并移除完成的交易记录
-        transactionManager.execute(block.getBody().getTransactions());
-
-        // 5.保存区块
-        blockChainManager.saveBlock(block);
-
-        // 6.更新最新区块索引
-        blockChainManager.updateLastBlock(block);
-
-        // 7.同步区块
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ApplicationContextProvider.publishEvent(new MineBlockEvent(block));
+            if (!powResult.isPresent()) {
+                continue;
             }
-        }).start();
 
-        return ResponseVO.success(block);
+            block.getHeader().setNonce(powResult.get().getNonce());
+            block.getHeader().setCurHash(powResult.get().getHash());
+
+            // 4.执行交易并移除完成的交易记录
+            transactionManager.execute(block.getBody().getTransactions());
+
+            // 5.保存区块
+            blockChainManager.saveBlock(block);
+
+            // 6.更新最新区块索引
+            blockChainManager.updateLastBlock(block);
+
+            // 7.同步区块
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    ApplicationContextProvider.publishEvent(new MineBlockEvent(block));
+                }
+            }).start();
+
+            return ResponseVO.success(block);
+        }
     }
 }
