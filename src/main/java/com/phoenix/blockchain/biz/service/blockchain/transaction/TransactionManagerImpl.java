@@ -18,6 +18,7 @@ import com.phoenix.blockchain.common.util.HashUtils;
 import com.phoenix.blockchain.common.util.LogUtils;
 import com.phoenix.blockchain.common.util.SignUtils;
 import com.phoenix.blockchain.core.model.Account;
+import com.phoenix.blockchain.core.model.Block;
 import com.phoenix.blockchain.core.model.Transaction;
 import com.phoenix.blockchain.core.service.ApplicationContextProvider;
 
@@ -192,7 +193,7 @@ public class TransactionManagerImpl implements TransactionManager {
     }
 
     @Override
-    public void clear() {
-        transactionPool.clear();
+    public void clearTxInBlock(Block block) {
+        transactionPool.clearTxInBlock(block.getBody().getTransactions());
     }
 }

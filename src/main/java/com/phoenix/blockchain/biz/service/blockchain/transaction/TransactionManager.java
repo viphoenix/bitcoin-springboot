@@ -3,6 +3,7 @@ package com.phoenix.blockchain.biz.service.blockchain.transaction;
 import java.util.List;
 
 import com.phoenix.blockchain.core.model.Account;
+import com.phoenix.blockchain.core.model.Block;
 import com.phoenix.blockchain.core.model.Transaction;
 
 /**
@@ -52,7 +53,7 @@ public interface TransactionManager {
     void execute(List<Transaction> transactions) throws Exception;
 
     /**
-     * 清空交易列表
+     * 清空区块中的交易列表
      */
-    void clear();
+    void clearTxInBlock(Block blockgit );
 }

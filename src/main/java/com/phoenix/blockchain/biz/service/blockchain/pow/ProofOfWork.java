@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.base.Optional;
 import com.phoenix.blockchain.biz.service.blockchain.blockchain.BlockChainManager;
+import com.phoenix.blockchain.biz.service.blockchain.transaction.TransactionManager;
 import com.phoenix.blockchain.common.constants.BitCoinConstants;
 import com.phoenix.blockchain.common.util.ByteUtils;
 import com.phoenix.blockchain.common.util.HashUtils;
@@ -27,6 +28,9 @@ public class ProofOfWork {
 
     @Autowired
     private BlockChainManager blockChainManager;
+
+    @Autowired
+    private TransactionManager transactionManager;
 
     /**
      * 挖矿
@@ -60,8 +64,12 @@ public class ProofOfWork {
         if (newSynBlock && !hasResult) {
             Block lastBlock = blockChainManager.getLastBlock();
 
-            // 如果新区块高度大,则终止本轮挖矿;如果新区块高度小,忽略
+            // 如果新区块高度大,则终止本轮挖矿,并删除区块中包含的交易;如果新区块高度小,忽略
             if (lastBlock.getHeader().getHeight() > block.getHeader().getHeight()) {
+
+                // TODO 不严谨,可能落后多个区块
+                transactionManager.clearTxInBlock(lastBlock);
+
                 return Optional.absent();
             }
         }

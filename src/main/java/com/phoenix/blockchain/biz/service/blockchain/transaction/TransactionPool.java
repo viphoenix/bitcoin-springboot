@@ -1,5 +1,6 @@
 package com.phoenix.blockchain.biz.service.blockchain.transaction;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
@@ -34,10 +35,14 @@ public class TransactionPool {
     }
 
     /**
-     * 清空交易
+     * 清空区块中的交易
      */
-    public synchronized void clear() {
-        transactionMap.clear();
+    public synchronized void clearTxInBlock(List<Transaction> transactions) {
+
+
+        for (Transaction transaction : transactions) {
+            delete(transaction);
+        }
     }
 
     public Map<String, Transaction> getTransactionMap() {

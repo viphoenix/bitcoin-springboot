@@ -1,2 +1,11 @@
 # bitcoin-springboot
-bitcoin with springboot
+1. 项目概述
+基于SpringBoot的简易bitcoin实现，具备交易、挖矿等基本功能。
+
+2. 注意点
+- 不支持挖矿账号同步
+- 默认创建的第一个账号为挖矿账号
+4. TODO
+- 增加交易排序规则，如按手续费
+- 测试用例补充
+- 交易验证，默克尔树
